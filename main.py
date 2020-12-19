@@ -36,8 +36,10 @@ def load_image(name, colorkey=None):
 
 
 def load_level(filename):
-    filename = "data/" + filename
+    filename = os.path.join(os.path.join('data', 'levels'), filename)
     # читаем уровень, убирая символы перевода строки
+    if not os.path.isfile(filename):
+        return terminate(f'Файла {filename} не существует')
     with open(filename, 'r') as mapFile:
         level_map = [line.strip() for line in mapFile]
 
@@ -66,7 +68,9 @@ def generate_level(level):
     return new_player, board
 
 
-def terminate():
+def terminate(msg=''):
+    if msg:
+        print(msg)
     pygame.quit()
     sys.exit()
 
@@ -171,13 +175,13 @@ def start_screen():
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption('Перемещение героя')
+    pygame.display.set_caption('Перемещение героя. Дополнительные уровни')
 
     fps = 60
 
     tile_width = tile_height = 50
 
-    level = load_level('map.txt')
+    level = load_level(input())
 
     size = WIDTH, HEIGHT = tile_width * len(level[0]), tile_height * len(level)
     screen = pygame.display.set_mode(size)
